@@ -35,6 +35,7 @@ MODx.page.UpdateResource = function(config) {
         Ext.EventManager.on(window, 'beforeunload',function(e) {
             MODx.releaseLock(this.config.resource);
             MODx.sleep(400);
+//            e.browserEvent.returnValue = '';
             return false;
         }, this);
     }
