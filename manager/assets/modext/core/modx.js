@@ -97,7 +97,7 @@ Ext.extend(MODx,Ext.Component,{
 
     ,getURLParameters: function() {
         var arg = {};
-        var href = window.location.search;
+        var href = document.location.href;
 
         if (href.indexOf('?') !== -1) {
             var params = href.split('?')[1];
@@ -141,23 +141,26 @@ Ext.extend(MODx,Ext.Component,{
         if (!this.fireEvent('beforeClearCache')) { return false; }
 
         var topic = '/clearcache/';
-        this.console = MODx.load({
-           xtype: 'modx-console'
-           ,register: 'mgr'
-           ,topic: topic
-           ,clear: true
-           ,show_filename: 0
-           ,listeners: {
-                'shutdown': {fn:function() {
-                    if (this.fireEvent('afterClearCache')) {
-                        if (MODx.config.clear_cache_refresh_trees == 1) {
-                            Ext.getCmp('modx-layout').refreshTrees();
+        if (this.console == null || this.console == undefined) {
+            this.console = MODx.load({
+               xtype: 'modx-console'
+               ,register: 'mgr'
+               ,topic: topic
+               ,clear: true
+               ,show_filename: 0
+               ,listeners: {
+                    'shutdown': {fn:function() {
+                        if (this.fireEvent('afterClearCache')) {
+                            if (MODx.config.clear_cache_refresh_trees == 1) {
+                                Ext.getCmp('modx-layout').refreshTrees();
+                            }
                         }
-                    }
-                },scope:this}
-           }
-        });
-
+                    },scope:this}
+               }
+            });
+        } else {
+            this.console.setRegister('mgr',topic);
+        }
         this.console.show(Ext.getBody());
 
         MODx.Ajax.request({
@@ -179,29 +182,6 @@ Ext.extend(MODx,Ext.Component,{
         return true;
     }
 
-    ,refreshURIs: function() {
-        var topic = '/refreshuris/';
-        MODx.Ajax.request({
-            url: MODx.config.connector_url
-            ,params: {
-                action: 'system/refreshuris'
-                ,register: 'mgr'
-                ,topic: topic
-                ,menu: true
-            }
-            ,listeners: {
-                'success':{fn:function(r) {
-                    MODx.msg.status({
-                        title: _('success')
-                        ,message: r.message || _('refresh_success')
-                        ,dontHide: false
-                    });
-                    this.clearCache();
-                },scope:this}
-            }
-        });
-        return true;
-    }
     ,releaseLock: function(id) {
         if (this.fireEvent('beforeReleaseLocks')) {
             MODx.Ajax.request({
@@ -403,11 +383,7 @@ Ext.extend(MODx,Ext.Component,{
         }
     }
     ,preview: function() {
-        var url = MODx.config.site_url;
-        if (MODx.config.default_site_url) {
-            url = MODx.config.default_site_url;
-        }
-        window.open(url);
+        window.open(MODx.config.site_url);
     }
     ,makeDroppable: function(fld,h,p) {
         if (!fld) return false;
@@ -450,37 +426,43 @@ Ext.reg('modx',MODx);
  */
 MODx.Ajax = function(config) {
     config = config || {};
-    MODx.Ajax.superclass.constructor.call(this, config);
+    MODx.Ajax.superclass.constructor.call(this,config);
+    this.addEvents({
+        'success': true
+        ,'failure': true
+    });
 };
 Ext.extend(MODx.Ajax,Ext.Component,{
     request: function(config) {
+        this.purgeListeners();
+        if (config.listeners) {
+            for (var i in config.listeners) {
+              if (config.listeners.hasOwnProperty(i)) {
+                var l = config.listeners[i];
+                this.on(i,l.fn,l.scope || this,l.options || {});
+              }
+            }
+        }
+
         Ext.apply(config,{
             success: function(r,o) {
                 r = Ext.decode(r.responseText);
-                if (!r) {
-                    return false;
-                }
+                if (!r) { return false; }
                 r.options = o;
                 if (r.success) {
-                    if (config.listeners.success && config.listeners.success.fn) {
-                        this._runCallback(config.listeners.success, [r]);
-                    }
-                } else if (config.listeners.failure && config.listeners.failure.fn) {
-                    this._runCallback(config.listeners.failure, [r]);
+                    this.fireEvent('success',r);
+                } else if (this.fireEvent('failure',r)) {
                     MODx.form.Handler.errorJSON(r);
                 }
                 return true;
             }
-            ,failure: function(r, o) {
-                r = Ext.decode(r.responseText);
-                if (!r) {
-                    return false;
-                }
-                r.options = o;
-                if (config.listeners.failure && config.listeners.failure.fn) {
-                    this._runCallback(config.listeners.failure, [r]);
+            ,failure: function(r,o) {
+            	r = Ext.decode(r.responseText);
+                if (!r) { return false; }
+            	r.options = o;
+            	if (this.fireEvent('failure',r)) {
                     MODx.form.Handler.errorJSON(r);
-                }
+            	}
                 return true;
             }
             ,scope: this
@@ -490,21 +472,6 @@ Ext.extend(MODx.Ajax,Ext.Component,{
             }
         });
         Ext.Ajax.request(config);
-    }
-    /**
-     * Execute the listener callback
-     *
-     * @param {Object} config - The listener configuration (ie.failure/success)
-     * @param {Array} args - An array of arguments to pass to the callback
-     */
-    ,_runCallback: function(config, args) {
-        var scope = window
-            ,fn = config.fn;
-
-        if (config.scope) {
-            scope = config.scope;
-        }
-        fn.apply(scope || window, args);
     }
 });
 Ext.reg('modx-ajax',MODx.Ajax);

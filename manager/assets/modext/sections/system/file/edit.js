@@ -124,6 +124,7 @@ MODx.panel.EditFile = function(config) {
                     ,hideLabel: true
                     ,name: 'content'
                     ,id: 'modx-file-content'
+                    ,cls: 'modx-code-content'
                     ,anchor: '98%'
                     ,grow: false
                     ,height: 400

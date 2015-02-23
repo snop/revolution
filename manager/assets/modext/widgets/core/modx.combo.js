@@ -26,7 +26,7 @@ Ext.override(Ext.form.ComboBox, {
     loaded: false
     ,setValue: Ext.form.ComboBox.prototype.setValue.createSequence(function(v) {
         var a = this.store.find(this.valueField, v);
-        if (typeof v !== 'undefined' && v !== null && this.mode == 'remote' && a == -1 && !this.loaded) {
+        if (v && v !== 0 && this.mode == 'remote' && a == -1 && !this.loaded) {
             var p = {};
             p[this.valueField] = v;
             this.loaded = true;
@@ -309,9 +309,9 @@ MODx.combo.Context = function(config) {
     Ext.applyIf(config,{
         name: 'context'
         ,hiddenName: 'context'
-        ,displayField: 'name'
+        ,displayField: 'key'
         ,valueField: 'key'
-        ,fields: ['key', 'name']
+        ,fields: ['key']
         ,pageSize: 20
         ,url: MODx.config.connector_url
         ,baseParams: {
@@ -382,11 +382,11 @@ MODx.combo.Category = function(config) {
         ,allowBlank: true
         ,editable: false
         ,enableKeyEvents: true
+        ,pageSize: 20
         ,url: MODx.config.connector_url
         ,baseParams: {
             action: 'element/category/getlist'
             ,showNone: true
-            ,limit: 0
         }
     });
     MODx.combo.Category.superclass.constructor.call(this,config);
@@ -408,11 +408,11 @@ MODx.combo.Language = function(config) {
         ,displayField: 'name'
         ,valueField: 'name'
         ,fields: ['name']
-        ,typeAhead: true
-        ,minChars: 1
-        ,editable: true
-        ,allowBlank: true
-        // ,pageSize: 20
+        ,forceSelection: true
+        ,typeAhead: false
+        ,editable: false
+        ,allowBlank: false
+        ,pageSize: 20
         ,url: MODx.config.connector_url
         ,baseParams: {
             action: 'system/language/getlist'
@@ -607,11 +607,10 @@ MODx.combo.Namespace = function(config) {
     Ext.applyIf(config,{
         name: 'namespace'
         ,hiddenName: 'namespace'
-        ,typeAhead: true
-        ,minChars: 1
-        ,queryParam: 'search'
-        ,editable: true
-        ,allowBlank: true
+        ,forceSelection: true
+        ,typeAhead: false
+        ,editable: false
+        ,allowBlank: false
         // ,listWidth: 300
         ,pageSize: 20
         ,url: MODx.config.connector_url
@@ -633,7 +632,7 @@ MODx.combo.Browser = function(config) {
        width: 400
        ,triggerAction: 'all'
        ,triggerClass: 'x-form-file-trigger'
-       ,source: config.source || MODx.config.default_media_source
+       ,source: config.source || 1
     });
     MODx.combo.Browser.superclass.constructor.call(this,config);
     this.config = config;
@@ -1005,6 +1004,7 @@ MODx.combo.ManagerTheme = function(config) {
         ,displayField: 'theme'
         ,valueField: 'theme'
         ,fields: ['theme']
+        ,pageSize: 0
         ,url: MODx.config.connector_url
         ,baseParams: {
             action: 'workspace/theme/getlist'

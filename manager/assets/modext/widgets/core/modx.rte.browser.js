@@ -159,7 +159,7 @@ Ext.extend(MODx.browser.RTE,Ext.Viewport,{
         }, ' ', {
             text: _('sort_by')+':'
         }, {
-            id: this.ident+'sortSelect'
+            id: 'sortSelect'
             ,xtype: 'combo'
             ,typeAhead: true
             ,triggerAction: 'all'
@@ -169,7 +169,7 @@ Ext.extend(MODx.browser.RTE,Ext.Viewport,{
             ,displayField: 'desc'
             ,valueField: 'name'
             ,lazyInit: false
-            ,value: MODx.config.modx_browser_default_sort || 'name'
+            ,value: 'name'
             ,store: new Ext.data.SimpleStore({
                 fields: ['name', 'desc'],
                 data : [['name',_('name')],['size',_('file_size')],['lastmod',_('last_modified')]]

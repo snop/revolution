@@ -140,7 +140,7 @@ Ext.extend(MODx.panel.Context,MODx.FormPanel,{
         if (g) { g.getStore().commitChanges(); }
 
         var t = parent.Ext.getCmp('modx-resource-tree');
-        if (t) { t.refresh(); }
+        if (t) { t.refreshNode(this.config.context+'_0',true); }
     }
 });
 Ext.reg('modx-panel-context',MODx.panel.Context);

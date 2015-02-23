@@ -1,3 +1,4 @@
+<div id="tvbrowser{$tv->id}"></div>
 <div id="tvpanel{$tv->id}"></div>
 
 {if $disabled}

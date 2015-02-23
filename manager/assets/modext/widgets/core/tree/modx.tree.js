@@ -455,7 +455,7 @@ Ext.extend(MODx.tree.Tree,Ext.tree.TreePanel,{
             if (e.button == 1) return window.open(n.attributes.page,'_blank');
             else if (e.ctrlKey == 1 || e.metaKey == 1 || e.shiftKey == 1) return window.open(n.attributes.page);
             MODx.loadPage(n.attributes.page);
-        } else if (n.isExpandable()) {
+        } else {
             n.toggle();
         }
         return true;
@@ -582,7 +582,7 @@ Ext.extend(MODx.tree.Tree,Ext.tree.TreePanel,{
         var node = this.getNodeById(id);
         if (node) {
             var n = self ? node : node.parentNode;
-            this.getLoader().load(n,function() {n.expand();},this);
+            var l = this.getLoader().load(n,function() {n.expand();},this);
         }
     }
 

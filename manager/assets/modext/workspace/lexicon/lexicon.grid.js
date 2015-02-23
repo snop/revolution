@@ -39,7 +39,6 @@ MODx.grid.Lexicon = function(config) {
             header: _('last_modified')
             ,dataIndex: 'editedon'
             ,width: 125
-            ,renderer: this._renderLastModDate
         }]
         ,tbar: [{
             xtype: 'tbtext'
@@ -61,6 +60,7 @@ MODx.grid.Lexicon = function(config) {
             ,id: 'modx-lexicon-filter-topic'
             ,itemId: 'topic'
             ,value: 'default'
+            ,pageSize: 20
             ,width: 120
             ,baseParams: {
                 action: 'workspace/lexicon/topic/getList'
@@ -196,14 +196,6 @@ Ext.extend(MODx.grid.Lexicon,MODx.grid.Grid,{
         }
     }
 
-    ,_renderLastModDate: function(value) {
-        if (Ext.isEmpty(value)) {
-            return '—';
-        }
-
-        return new Date(value*1000).format(MODx.config.manager_date_format + ' ' + MODx.config.manager_time_format);
-    }
-
     ,filter: function(cb,r,i,name) {
     	if (!name) {return false;}
     	this.store.baseParams[name] = cb.getValue();
@@ -301,11 +293,15 @@ Ext.extend(MODx.grid.Lexicon,MODx.grid.Grid,{
     ,reloadFromBase: function() {
     	Ext.Ajax.timeout = 0;
     	var topic = '/workspace/lexicon/reload/';
-        this.console = MODx.load({
-           xtype: 'modx-console'
-           ,register: 'mgr'
-           ,topic: topic
-        });
+        if (this.console === null) {
+            this.console = MODx.load({
+               xtype: 'modx-console'
+               ,register: 'mgr'
+               ,topic: topic
+            });
+        } else {
+            this.console.setRegister('mgr',topic);
+        }
 
         this.console.on('complete',function(){
             this.refresh();
@@ -356,7 +352,7 @@ Ext.extend(MODx.grid.Lexicon,MODx.grid.Grid,{
     	r['namespace'] = tb.getComponent('namespace').getValue();
         r.language =  tb.getComponent('language').getValue();
         r.topic = tb.getComponent('topic').getValue();
-
+        
         if (!this.createEntryWindow) {
             this.createEntryWindow = MODx.load({
                 xtype: 'modx-window-lexicon-entry-create'

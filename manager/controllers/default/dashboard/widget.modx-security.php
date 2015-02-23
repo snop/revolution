@@ -12,11 +12,8 @@ class modDashboardWidgetSecurityFeed extends modDashboardWidgetInterface {
      * @var modRSSParser $rss
      */
     public $rss;
-
+    
     public function render() {
-        if (function_exists('checkdnsrr') && !checkdnsrr('google.com', 'ANY')) {
-            return '';
-        }
         $this->modx->loadClass('xmlrss.modRSSParser','',false,true);
         $this->rss = new modRSSParser($this->modx);
 

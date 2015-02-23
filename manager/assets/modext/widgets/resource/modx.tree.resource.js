@@ -31,6 +31,12 @@ MODx.tree.Resource = function(config) {
         }
     });
     MODx.tree.Resource.superclass.constructor.call(this,config);
+    this.on('render',function() {
+        var el = Ext.get('modx-resource-tree');
+        el.createChild({tag: 'div', id: 'modx-resource-tree_tb'});
+        el.createChild({tag: 'div', id: 'modx-resource-tree_filter'});
+        //this.addSearchToolbar();
+    },this);
     this.addEvents('loadCreateMenus');
     this.on('afterSort',this._handleAfterDrop,this);
 };
@@ -433,11 +439,15 @@ Ext.extend(MODx.tree.Resource,MODx.tree.Tree,{
             xtype: 'modx-window-quick-create-modResource'
             ,record: r
             ,listeners: {
-                'success':{
-                    fn: function() {
-                        this.refreshNode(this.cm.activeNode.id, true);
+                'success':{fn:function() {
+                    var node = this.getNodeById(this.cm.activeNode.id);
+                    if (node) {
+                        var n = node.parentNode ? node.parentNode : node;
+                        this.getLoader().load(n,function() {
+                            n.expand();
+                        },this);
                     }
-                    ,scope: this}
+                },scope:this}
                 ,'hide':{fn:function() {this.destroy();}}
                 ,'show':{fn:function() {this.center();}}
             }

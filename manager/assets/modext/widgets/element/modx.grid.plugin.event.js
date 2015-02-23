@@ -92,11 +92,6 @@ MODx.grid.PluginEvent = function(config) {
         }] */
     });
     MODx.grid.PluginEvent.superclass.constructor.call(this,config);
-
-    this.store.sortInfo = {
-        field: 'enabled',
-        direction: 'DESC'
-    };
     this.addEvents('updateEvent');
 };
 Ext.extend(MODx.grid.PluginEvent,MODx.grid.Grid,{
@@ -163,6 +158,7 @@ MODx.window.UpdatePluginEvent = function(config) {
         }]
     });
     MODx.window.UpdatePluginEvent.superclass.constructor.call(this,config);
+    this.on('show',this.onShow,this);
     this.on('beforeSubmit',this.beforeSubmit,this);
 };
 Ext.extend(MODx.window.UpdatePluginEvent,MODx.Window,{
@@ -229,16 +225,15 @@ MODx.grid.PluginEventAssoc = function(config) {
             header: _('propertyset')
             ,dataIndex: 'propertyset'
             ,width: 150
-            ,editor: {
+            ,editor: MODx.load({
                 xtype: 'modx-combo-property-set'
-                ,renderer: true
                 ,baseParams: {
                     action: 'element/propertyset/getList'
                     ,showAssociated: true
                     ,elementId: config.plugin
                     ,elementType: 'modPlugin'
                 }
-            }
+            })
         },{
             header: _('priority')
             ,dataIndex: 'priority'
@@ -279,9 +274,6 @@ Ext.extend(MODx.grid.PluginEventAssoc,MODx.grid.LocalGrid,{
         var sm = this.getSelectionModel();
         e.stopEvent();
         e.preventDefault();
-        if (!sm.isSelected(ri)) {
-            sm.selectRow(ri);
-        }
         this.menu.removeAll();
         this.addContextMenuItem([{
             text: _('remove')

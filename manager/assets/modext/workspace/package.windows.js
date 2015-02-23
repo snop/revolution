@@ -188,7 +188,7 @@ MODx.window.ChangeProvider = function(config) {
     config = config || {};
     Ext.applyIf(config,{
         title: _('provider_select')
-        ,width: 600 // prevents primary button text from being cut off if it is a long string
+        ,width: 400
 		,layout: 'form'
 		,items:[{
 			xtype: 'modx-template-panel'

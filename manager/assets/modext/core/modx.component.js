@@ -275,10 +275,7 @@ Ext.extend(MODx.toolbar.ActionButtons,Ext.Toolbar,{
                         ,message: r.result.message || _('save_successful')
                         ,dontHide: r.result.message != '' ? true : false
                     });
-
-                    if (itm.redirect != false) {
-                        Ext.callback(this.redirect,this,[o,itm,r.result],1000);
-                    }
+                    Ext.callback(this.redirect,this,[o,itm,r.result],1000);
 
                     this.resetDirtyButtons(r.result);
                 },this);

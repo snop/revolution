@@ -62,15 +62,14 @@ MODx.Console = function(config) {
             } catch (e) {}
         }
         this.fireEvent('shutdown');
-        //this.getComponent('body').el.update('');
-        this.destroy();
+        this.getComponent('body').el.update('');
     });
     this.on('complete',this.onComplete,this);
 };
 Ext.extend(MODx.Console,Ext.Window,{
     mgr: null
     ,running: false
-
+    
     ,init: function() {
         Ext.Msg.hide();
         this.fbar.setDisabled(true);
@@ -115,7 +114,7 @@ Ext.extend(MODx.Console,Ext.Window,{
         this.fbar.setDisabled(false);
         this.keyMap.setDisabled(false);
     }
-
+    
     ,download: function() {
         var c = this.getComponent('body').getEl().dom.innerHTML || '&nbsp;';
         MODx.Ajax.request({
@@ -128,15 +127,15 @@ Ext.extend(MODx.Console,Ext.Window,{
                 'success':{fn:function(r) {
                     location.href = MODx.config.connector_url+'?action=system/downloadOutput&HTTP_MODAUTH='+MODx.siteId+'&download='+r.message;
                 },scope:this}
-            }
+            }            
         });
     }
-
+        
     ,setRegister: function(register,topic) {
     	this.config.register = register;
         this.config.topic = topic;
     }
-
+    
     ,hideConsole: function() {
         this.hide();
     }

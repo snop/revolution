@@ -387,12 +387,7 @@ Ext.extend(MODx.grid.Package,MODx.grid.Grid,{
         this.loadWindow(btn,e,{
             xtype: 'modx-window-package-uninstall'
             ,listeners: {
-                success: {
-                    fn: function(va) {
-                        this._uninstall(this.menu.record,va,btn);
-                    }
-                    ,scope: this
-                }
+                'success': {fn: function(va) { this._uninstall(this.menu.record,va,btn); },scope:this}
             }
         });
     }
@@ -446,11 +441,15 @@ Ext.extend(MODx.grid.Package,MODx.grid.Grid,{
 
 	/* Load the console */
     ,loadConsole: function(btn,topic) {
-        this.console = MODx.load({
-           xtype: 'modx-console'
-           ,register: 'mgr'
-           ,topic: topic
-        });
+    	if (this.console === null) {
+            this.console = MODx.load({
+               xtype: 'modx-console'
+               ,register: 'mgr'
+               ,topic: topic
+            });
+        } else {
+            this.console.setRegister('mgr',topic);
+        }
         this.console.show(btn);
     }
 

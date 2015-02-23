@@ -134,26 +134,16 @@ Ext.extend(MODx.grid.Grid,Ext.grid.EditorGridPanel,{
                 ,data: d
             }
             ,listeners: {
-                success: {
-                    fn: function(r) {
-                        if (this.config.save_callback) {
-                            Ext.callback(this.config.save_callback,this.config.scope || this,[r]);
-                        }
-                        e.record.commit();
-                        if (!this.config.preventSaveRefresh) {
-                            this.refresh();
-                        }
-                        this.fireEvent('afterAutoSave',r);
+                'success': {fn:function(r) {
+                    if (this.config.save_callback) {
+                        Ext.callback(this.config.save_callback,this.config.scope || this,[r]);
                     }
-                    ,scope: this
-                }
-                ,failure: {
-                    fn: function(r) {
-                        e.record.reject();
-                        this.fireEvent('afterAutoSave', r);
+                    e.record.commit();
+                    if (!this.config.preventSaveRefresh) {
+                        this.refresh();
                     }
-                    ,scope: this
-                }
+                    this.fireEvent('afterAutoSave',r);
+                },scope:this}
             }
         });
     }
@@ -220,7 +210,7 @@ Ext.extend(MODx.grid.Grid,Ext.grid.EditorGridPanel,{
         if (this.fireEvent('beforeRemoveRow',r)) {
             MODx.msg.confirm({
                 title: _('warning')
-                ,text: _(text, r)
+                ,text: _(text)
                 ,url: this.config.url
                 ,params: p
                 ,listeners: {

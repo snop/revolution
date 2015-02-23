@@ -38,47 +38,36 @@ MODx.panel.Profile = function(config) {
             ,border: false
             ,autoHeight: true
             ,anchor: '100%'
-        },this.getTabs(config)]
-    });
-    MODx.panel.Profile.superclass.constructor.call(this,config);
-};
-Ext.extend(MODx.panel.Profile,MODx.Panel, {
-    getTabs: function(config) {
-        var items = [{
+        },MODx.getPageStructure([{
             xtype: 'modx-panel-profile-update'
             ,id: 'modx-panel-profile-update'
             ,user: config.user
             ,preventRender: true
-        }];
-        if (MODx.perm.change_password) {
-            items.push({
-                xtype: 'modx-panel-profile-password-change'
-                ,id: 'modx-panel-profile-password-change'
+        },{
+            xtype: 'modx-panel-profile-password-change'
+            ,id: 'modx-panel-profile-password-change'
+            ,user: config.user
+            ,preventRender: true
+        },{
+            title: _('profile_recent_resources')
+            ,bodyStyle: 'padding: 15px;'
+            ,id: 'modx-profile-recent-docs'
+            ,autoHeight: true
+            ,layout: 'anchor'
+            ,items: [{
+                html: '<p>'+_('profile_recent_resources_desc')+'</p><br />'
+                ,id: 'modx-profile-recent-docs-msg'
+                ,border: false
+            },{
+                xtype: 'modx-grid-user-recent-resource'
                 ,user: config.user
                 ,preventRender: true
-            });
-        }
-        if (MODx.perm.view_document) {
-            items.push({
-                title: _('profile_recent_resources')
-                ,bodyStyle: 'padding: 15px;'
-                ,id: 'modx-profile-recent-docs'
-                ,autoHeight: true
-                ,layout: 'anchor'
-                ,items: [{
-                    html: '<p>'+_('profile_recent_resources_desc')+'</p><br />'
-                    ,id: 'modx-profile-recent-docs-msg'
-                    ,border: false
-                },{
-                    xtype: 'modx-grid-user-recent-resource'
-                    ,user: config.user
-                    ,preventRender: true
-                }]
-            });
-        }
-        return MODx.getPageStructure(items);
-    }
-});
+            }]
+        }])]
+    });
+    MODx.panel.Profile.superclass.constructor.call(this,config);
+};
+Ext.extend(MODx.panel.Profile,MODx.Panel);
 Ext.reg('modx-panel-profile',MODx.panel.Profile);
 
 /**

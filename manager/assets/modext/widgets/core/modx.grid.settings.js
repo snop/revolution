@@ -102,7 +102,6 @@ MODx.grid.SettingsGrid = function(config) {
             ,dataIndex: 'editedon'
             ,sortable: true
             ,editable: false
-            ,renderer: this.renderLastModDate.createDelegate(this,[this],true)
             ,width: 100
         },{
             header: _('area')
@@ -203,17 +202,13 @@ Ext.extend(MODx.grid.SettingsGrid,MODx.grid.Grid,{
                 ,handler: this.updateSetting
             },'-',{
                 text: _('setting_remove')
-                ,handler: this.removeSetting
+                ,handler: this.remove.createDelegate(this,['setting_remove_confirm', 'system/settings/remove'])
             });
         }
         if (m.length > 0) {
             this.addContextMenuItem(m);
             this.menu.showAt(e.xy);
         }
-    }
-
-    ,removeSetting: function() {
-        return this.remove('setting_remove_confirm', 'system/settings/remove');
     }
 
     ,updateSetting: function(btn,e) {
@@ -295,7 +290,7 @@ Ext.extend(MODx.grid.SettingsGrid,MODx.grid.Grid,{
             f = MODx.grid.Grid.prototype.rendYesNo;
             return f(v,md,rec,ri,ci,s,g);
         } else if (r.xtype === 'datefield') {
-            f = Ext.util.Format.dateRenderer(MODx.config.manager_date_format);
+            f = Ext.util.Format.dateRenderer('Y-m-d');
             return f(v,md,rec,ri,ci,s,g);
         } else if (r.xtype === 'text-password' || r.xtype == 'modx-text-password') {
             f = MODx.grid.Grid.prototype.rendPassword;
@@ -316,24 +311,6 @@ Ext.extend(MODx.grid.SettingsGrid,MODx.grid.Grid,{
             return f(v,md,rec,ri,ci,s,g);
         }
         return v;
-    }
-
-    /**
-     * Prevent display updated date for unmodified records
-     *
-     * @param {String} value
-     *
-     * @returns {String}
-     */
-    ,renderLastModDate: function(value) {
-        if (Ext.isEmpty(value)) {
-            return '—';
-        }
-
-        // Return formatted date (server side)
-        return value;
-        // JavaScripts time is in milliseconds
-        //return new Date(value*1000).format(MODx.config.manager_date_format + ' ' + MODx.config.manager_time_format);
     }
 });
 Ext.reg('modx-grid-settings',MODx.grid.SettingsGrid);

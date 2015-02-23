@@ -10,6 +10,7 @@ MODx.panel.FileTree = function(config) {
     config = config || {};
     Ext.applyIf(config, {
         _treePrefix: 'source-tree-'
+        ,id: 'modx-leftbar-filetree'
         ,autoHeight: true
         ,defaults: {
             autoHeight: true
@@ -25,10 +26,9 @@ Ext.extend(MODx.panel.FileTree, Ext.Container, {
      */
     getSourceList: function() {
         MODx.Ajax.request({
-            url: MODx.config.connector_url
+            url: MODx.config.connectors_url
             ,params: {
                 action: 'source/getList'
-                ,limit: 0
             }
             ,listeners: {
                 success: {

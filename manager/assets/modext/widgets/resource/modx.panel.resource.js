@@ -478,9 +478,6 @@ Ext.extend(MODx.panel.Resource,MODx.FormPanel,{
 
     ,getMainRightFields: function(config) {
         config = config || {};
-
-        var aliasLength = ~~MODx.config['friendly_alias_max_length'] || 0;
-
         return [{
             xtype: 'modx-combo-template'
             ,fieldLabel: _('resource_template')
@@ -503,7 +500,7 @@ Ext.extend(MODx.panel.Resource,MODx.FormPanel,{
             ,description: '<b>[[*alias]]</b><br />'+_('resource_alias_help')
             ,name: 'alias'
             ,id: 'modx-resource-alias'
-            ,maxLength: (aliasLength > 255 || aliasLength === 0) ? 255 : aliasLength
+            ,maxLength: 100
             ,anchor: '100%'
             ,value: config.record.alias || ''
 
@@ -797,6 +794,7 @@ Ext.extend(MODx.panel.Resource,MODx.FormPanel,{
             xtype: 'textarea'
             ,name: 'ta'
             ,id: 'ta'
+            ,cls: 'modx-code-content'
             ,hideLabel: true
             ,anchor: '100%'
             ,height: 400

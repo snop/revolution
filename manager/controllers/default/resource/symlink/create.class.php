@@ -15,7 +15,6 @@ class SymLinkCreateManagerController extends ResourceCreateManagerController {
         $this->addJavascript($mgrUrl.'assets/modext/widgets/resource/modx.panel.resource.tv.js');
         $this->addJavascript($mgrUrl.'assets/modext/widgets/resource/modx.panel.resource.js');
         $this->addJavascript($mgrUrl.'assets/modext/widgets/resource/modx.panel.resource.symlink.js');
-        $this->addJavascript($mgrUrl.'assets/modext/sections/resource/create.js');
         $this->addJavascript($mgrUrl.'assets/modext/sections/resource/symlink/create.js');
         $this->addHtml('<script type="text/javascript">
 // <![CDATA[
@@ -34,8 +33,6 @@ Ext.onReady(function() {
 });
 // ]]>
 </script>');
-        /* load RTE */
-        $this->loadRichTextEditor();
     }
     
     /**

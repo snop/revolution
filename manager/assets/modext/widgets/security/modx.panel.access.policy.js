@@ -193,7 +193,7 @@ MODx.grid.PolicyPermissions = function(config) {
 Ext.extend(MODx.grid.PolicyPermissions,MODx.grid.LocalGrid,{
     onPermRowClick: function(g,ri,e) {
         var s = this.getStore();
-        if (!s || typeof ri == 'undefined') { return; }
+        if (!s) { return; }
 
         var r = s.getAt(ri);
         r.set('enabled',r.get('enabled') ? false : true);
